@@ -70,7 +70,8 @@ import java.util.Vector;
  * @version 1.0
  * @author gigo
  */
-public class NCMS_Routing extends Display{
+public class NCMS_Routing extends Display
+{
 
 
 	/**
