@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  An excerpt of an egocentric social network  -->
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+<graph edgedefault="directed">
+ 
+<!-- data schema -->
+<key id="name" for="node" attr.name="name" attr.type="string"/>
+<key id="match" for="edge" attr.name="match" attr.type="boolean"/>
+  
+<!-- nodes -->  
+<node id="1">
+ <data key="name">MSHT01</data>
+
+</node>
+<node id="2">
+ <data key="name">STPL01</data>
+
+</node>
+<node id="3">
+ <data key="name">STHT01</data>
+
+</node>
+<node id="4">
+ <data key="name">STHT02</data>
+
+</node>
+<node id="5">
+ <data key="name">STPHCM01</data>
+
+</node>
+<node id="6">
+ <data key="name">STPHN01</data>
+
+</node>
+<node id="7">
+ <data key="name">ISPHN01</data>
+
+</node>
+<node id="8">
+ <data key="name">ISPHN02</data>
+
+</node>
+<node id="9">
+ <data key="name">STGM01</data>
+
+</node>
+<node id="10">
+ <data key="name">STGM02</data>
+
+</node>
+
+
+<!-- edges -->
+<edge source="1" target="2"><data key="match">true</data></edge>
+<edge source="1" target="3"><data key="match">true</data></edge>
+
+<!-- ed's friends -->
+<edge source="4" target="2"><data key="match">false</data></edge>
+<edge source="4" target="3"><data key="match">false</data></edge>
+<!-- christiaan's friends -->
+<edge source="5" target="2"><data key="match">true</data></edge>
+<edge source="5" target="3"><data key="match">true</data></edge>
+<!-- emily's friends -->
+<edge source="6" target="7"><data key="match">true</data></edge>
+<edge source="6" target="8"><data key="match">true</data></edge>
+<!-- adam's friends -->
+<edge source="9" target="6"><data key="match">true</data></edge>
+<edge source="9" target="10"><data key="match">true</data></edge>
+
+
+
+
+</graph>
+</graphml>
