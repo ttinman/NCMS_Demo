@@ -7,6 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="prefuse_dep" level="project" />
+    <orderEntry type="library" name="alloy" level="project" />
   </component>
 </module>
 

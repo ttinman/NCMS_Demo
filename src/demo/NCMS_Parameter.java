@@ -1,6 +1,6 @@
 package demo;
 
-import com.viettel.gatepro.sgw.client.api.gui.GateProGUI;
+//import com.viettel.gatepro.sgw.client.api.gui.GateProGUI;
 import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;
@@ -45,6 +45,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.text.BreakIterator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,7 +76,7 @@ public class NCMS_Parameter extends Display {
     private int m_orientation = Constants.ORIENT_LEFT_RIGHT;
     private FlexibleTreeLayout treeLayout;
     private int action = 0;
-    private GateProGUI newGui;
+//    private GateProGUI newGui;
     private HashMap<String,Vector<Vector>> sampleData = new HashMap<String, Vector<Vector>>();
     private JPanel tablePanel;
     private CommonTableModel model;
@@ -245,41 +249,35 @@ public class NCMS_Parameter extends Display {
     }
 
     public void initSampleData(){
-       String nodeTitle = "MWPD09";
-       Vector parameters = new Vector();
-       parameters.add("FORCE FILE CHANGE");
-       parameters.add("NO");
-       parameters.add("NO");
-       parameters.add("DEFAULT");
-       parameters.add("STORING");
-       parameters.add("YES");
-       Vector item = new Vector();
-        item.add(parameters);
-        sampleData.put(nodeTitle,item);
 
-       nodeTitle = "MWPD08";
-       parameters = new Vector();
-       parameters.add("AT");
-       parameters.add("1");
-       parameters.add("1");
-       parameters.add("DEFAULT");
-       parameters.add("SUB");
-       parameters.add("2");
-       item = new Vector();
-        item.add(parameters);
-       sampleData.put(nodeTitle,item);
+        try {
 
-       nodeTitle = "BCHT71";
-       parameters = new Vector();
-       parameters.add("GT");
-       parameters.add("100");
-       parameters.add("100");
-       parameters.add("DEFAULT");
-       parameters.add("VOICE");
-       parameters.add("101");
-       item = new Vector();
-        item.add(parameters);
-        sampleData.put(nodeTitle,item);
+            FileInputStream fstream = new FileInputStream("datasets/sample.parameter.data.txt");
+
+            DataInputStream in = new DataInputStream(fstream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+
+            while ((strLine = br.readLine()) != null) {
+
+                strLine = strLine.trim();
+                String[] parts = strLine.split(":");
+                Vector parameters = new Vector();
+                for(int i =1;i<parts.length;i++){
+
+                    parameters.add(parts[i]);
+
+                }
+                 Vector item = new Vector();
+                    item.add(parameters);
+                    sampleData.put(parts[0],item);
+            }
+
+            in.close();
+        } catch (Exception e) {//Catch exception if any
+            System.err.println("Error: " + e.getMessage());
+        }
+
     }
 
     // ------------------------------------------------------------------------
@@ -697,12 +695,12 @@ public class NCMS_Parameter extends Display {
     	public void actionPerformed(ActionEvent e) {
     		if (e.getActionCommand().startsWith("node")) {
     			if (e.getActionCommand().endsWith("delete")) {
-                    if(newGui==null){
-                        newGui = new GateProGUI("192.168.208.69",2257,"JulianPC","ngantrung");
-                    }
-
-                    newGui.setConnectInfo("192.168.4.95:23");
-                    newGui.showMe(null);
+//                    if(newGui==null){
+//                        newGui = new GateProGUI("192.168.208.69",2257,"JulianPC","ngantrung");
+//                    }
+//
+//                    newGui.setConnectInfo("192.168.4.95:23");
+//                    newGui.showMe(null);
                     action =1;
     			} else if (e.getActionCommand().endsWith("editText")) {
                      action =2;

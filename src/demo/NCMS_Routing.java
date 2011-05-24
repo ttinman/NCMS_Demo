@@ -1,6 +1,6 @@
 package demo;
 
-import com.viettel.gatepro.sgw.client.api.gui.GateProGUI;
+//import com.viettel.gatepro.sgw.client.api.gui.GateProGUI;
 import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;
@@ -114,7 +114,7 @@ public class NCMS_Routing extends Display
     private NeighborHighlightControl nc;
     private GroupDistanceListener gl;
     private HiddenGroupPredicate myPredicate;
-    private GateProGUI newGui;
+//    private GateProGUI newGui;
 //    private ArrayList homeVisibleItems = new ArrayList();
 
     public static void main(String argv[]) {
@@ -1552,12 +1552,12 @@ public class NCMS_Routing extends Display
     	public void actionPerformed(ActionEvent e) {
     		if (e.getActionCommand().startsWith("node")) {
     			if (e.getActionCommand().endsWith("delete")) {
-                    if(newGui==null){
-                        newGui = new GateProGUI("192.168.208.69",2257,"JulianPC","ngantrung");
-                    }
-
-                    newGui.setConnectInfo("192.168.4.95:23");
-                    newGui.showMe(null);
+//                    if(newGui==null){
+//                        newGui = new GateProGUI("192.168.208.69",2257,"JulianPC","ngantrung");
+//                    }
+//
+//                    newGui.setConnectInfo("192.168.4.95:23");
+//                    newGui.showMe(null);
     			} else if (e.getActionCommand().endsWith("editText")) {
 
     			} else if (e.getActionCommand().endsWith("addEdge")) {

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="prefuse_dep">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../prefuse-beta/lib/lucene-1.4.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
