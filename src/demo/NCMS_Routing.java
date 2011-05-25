@@ -418,7 +418,6 @@ public class NCMS_Routing extends Display
             }
         });
 
-
         Box box = new Box(BoxLayout.X_AXIS);
 
         box.setBackground(Color.WHITE);
@@ -480,6 +479,8 @@ public class NCMS_Routing extends Display
         dialog.getContentPane().add(textPane);
         dialog.setSize(500,700);
         gview.setLogDetailDialog(dialog);
+
+
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(levelFillPanel, BorderLayout.NORTH);
@@ -1675,7 +1676,7 @@ public class NCMS_Routing extends Display
 
                              // Create Gatepro session
 //                              logScroll.setVisible(true);
-                              createGateProSession();
+
 
                               NodeItem sourceItem = edge.getSourceItem();
                               NodeItem targetItem = edge.getTargetItem();
@@ -1698,6 +1699,9 @@ public class NCMS_Routing extends Display
                                  targetItem = (NodeItem)ite.next();
                                  break;
                              }
+
+                             createGateProSession("create link between " + sourceItem.getString("name") + "  ---  " + targetItem.getString("name"));
+
                              Edge ed= g.getEdge(g.addEdge(sourceItem.getRow(), targetItem.getRow()));
                              if(mainPath){
                                  ed.setString("weight","1");
@@ -1715,7 +1719,19 @@ public class NCMS_Routing extends Display
                              }
 
                              vis.run("filter");
-                             logDetailDialog.setVisible(true);
+                             Thread showLog = new Thread(){
+                               public void run(){
+                                   try{
+                                       Thread.sleep(2000);
+                                       logDetailDialog.setVisible(true);
+                                   }catch (Exception ex){
+
+                                   }
+
+                               }
+                             };
+                             showLog.start();
+
                          }
                      }
     			}
@@ -1723,20 +1739,31 @@ public class NCMS_Routing extends Display
     	}
 
 
-        public void createGateProSession(){
+        public void createGateProSession(final String command){
             try{
-               gatepro = new GatePro("192.168.208.69",2257,"JulianPC","ngantrung");
-               GateProSession telnetGateSession = gatepro.createSession("192.168.4.95", "23");
-               telnetGateSession.addListener(logDetailListener);
-               telnetGateSession.setCommandTerminator("\r");
-               telnetGateSession.setPromt("login name:");
-               telnetGateSession.connect();
-               telnetGateSession.sendWait("viettel","password:");
-               telnetGateSession.sendWait("viettel1","Domain:");
-               telnetGateSession.sendWait("",">");
-               telnetGateSession.setPromt(">");
-               telnetGateSession.sendWait("dir");
-               telnetGateSession.exit();
+               Thread newThread = new Thread(){
+                   public void run(){
+                       try{
+                            gatepro = new GatePro("192.168.208.69",2257,"JulianPC","ngantrung");
+                           GateProSession telnetGateSession = gatepro.createSession("192.168.4.95", "23");
+                           telnetGateSession.addListener(logDetailListener);
+                           telnetGateSession.setCommandTerminator("\r");
+                           telnetGateSession.setPromt("login name:");
+                           telnetGateSession.connect();
+                           telnetGateSession.sendWait("viettel","password:");
+                           telnetGateSession.sendWait("viettel1","Domain:");
+                           telnetGateSession.sendWait("",">");
+                           telnetGateSession.setPromt(">");
+                           telnetGateSession.sendWait("dir");
+                           telnetGateSession.sendWait(command);
+                           telnetGateSession.exit();
+                       }catch (Exception ex){
+                           ex.printStackTrace();
+                       }
+
+                   }
+               };
+               newThread.start();
             }catch (Exception ex){
                ex.printStackTrace();
             }
