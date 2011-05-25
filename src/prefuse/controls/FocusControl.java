@@ -31,7 +31,7 @@ import prefuse.visual.VisualItem;
  */
 public class FocusControl extends ControlAdapter {
 
-    private String group = Visualization.FOCUS_ITEMS;
+    protected String group = Visualization.FOCUS_ITEMS;
     protected String activity;
     protected VisualItem curFocus;
     protected int ccount;
@@ -214,7 +214,7 @@ public class FocusControl extends ControlAdapter {
         }
     }
     
-    private void runActivity(Visualization vis) {
+    protected void runActivity(Visualization vis) {
         if ( activity != null ) {
             vis.run(activity);
         }

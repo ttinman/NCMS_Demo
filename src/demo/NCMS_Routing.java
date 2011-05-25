@@ -1,6 +1,9 @@
 package demo;
 
-//import com.viettel.gatepro.sgw.client.api.gui.GateProGUI;
+import com.viettel.gatepro.sgw.client.api.GatePro;
+import com.viettel.gatepro.sgw.client.api.gui.GateProGUI;
+import com.viettel.gatepro.sgw.client.session.GateProListener;
+import com.viettel.gatepro.sgw.client.session.GateProSession;
 import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;
@@ -114,7 +117,11 @@ public class NCMS_Routing extends Display
     private NeighborHighlightControl nc;
     private GroupDistanceListener gl;
     private HiddenGroupPredicate myPredicate;
-//    private GateProGUI newGui;
+    private GateProGUI newGui;
+    private GatePro gatepro;
+    private LogDetailListener logDetailListener;
+    private JScrollPane logScrollPane;
+    private JDialog logDetailDialog;
 //    private ArrayList homeVisibleItems = new ArrayList();
 
     public static void main(String argv[]) {
@@ -229,16 +236,21 @@ public class NCMS_Routing extends Display
         group.add(siteView);
         group.add(exchangeTypeView);
         JButton searchBtn = new JButton("Tìm kiếm");
+        final JPanel cardPanel = new JPanel(new CardLayout());
         searchBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try{
-                   tableViewBtn.setEnabled(false);
-                   topoViewBtn.setEnabled(false);
-                   Thread.sleep(1000);
-                   tableViewBtn.setEnabled(true);
-                   tableViewBtn.setEnabled(true);
-                   topoViewBtn.setEnabled(true);
-                }catch (Exception ex){
+                try {
+                    tableViewBtn.setEnabled(false);
+                    topoViewBtn.setEnabled(false);
+                    Thread.sleep(1000);
+                    tableViewBtn.setEnabled(true);
+                    tableViewBtn.setEnabled(true);
+                    topoViewBtn.setEnabled(true);
+                    CardLayout cl = (CardLayout) (cardPanel.getLayout());
+                    cl.show(cardPanel, "Topo");
+                    siteView.setEnabled(true);
+                    exchangeTypeView.setEnabled(true);
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
 
@@ -286,7 +298,7 @@ public class NCMS_Routing extends Display
         tablePanel.add(scrollPane,BorderLayout.CENTER);
         //
 
-        final JPanel cardPanel = new JPanel(new CardLayout());
+
         cardPanel.add(new JPanel(),"");
         cardPanel.add(tablePanel,"Table");
         cardPanel.add(viewCardPanel,"Topo");
@@ -454,6 +466,21 @@ public class NCMS_Routing extends Display
         levelFillPanel.add(homeLabel,BorderLayout.WEST);
         levelFillPanel.add(childrenLabel,BorderLayout.CENTER);
         levelFillPanel.setBackground(Color.WHITE);
+
+        JTextPane textPane = new JTextPane();
+        gview.setLogDetailListener(new LogDetailListener(textPane));
+        gview.setLogScrollPane(new JScrollPane());
+        gview.getLogScrollPane().add(textPane);
+        gview.getLogScrollPane().setVisible(true);
+
+        JPanel logPanel = new JPanel(new BorderLayout());
+        logPanel.add(gview, BorderLayout.CENTER);
+        logPanel.add(gview.getLogScrollPane(), BorderLayout.SOUTH);
+        JDialog dialog = new JDialog();
+        dialog.getContentPane().add(textPane);
+        dialog.setSize(500,700);
+        gview.setLogDetailDialog(dialog);
+
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(levelFillPanel, BorderLayout.NORTH);
         panel.add(gview, BorderLayout.CENTER);
@@ -658,7 +685,7 @@ public class NCMS_Routing extends Display
         animate.add(new RepaintAction());
         m_vis.putAction("animate", animate);
         m_vis.alwaysRunAfter("filter", "animate");
-        m_vis.alwaysRunAfter("home", "animate");
+//        m_vis.alwaysRunAfter("home", "animate");
         m_vis.alwaysRunAfter("animate", "animatePaint");
         UpdateListener lstnr = new UpdateListener() {
             public void update(Object src) {
@@ -685,8 +712,8 @@ public class NCMS_Routing extends Display
         // initialize the display
         setSize(900,950);
         setItemSorter(new TreeDepthItemSorter());
-        fc = new FocusControl(1, "filter");
-        fc1 = new FocusControl(1,"home");
+        fc = new MyFocusControl(1, "filter");
+        fc1 = new MyFocusControl(1,"home");
         nc = new NeighborHighlightControl(m_vis,neighborGroups);
         addControlListener(new DragControl());
 //        addControlListener(new ZoomToFitControl());
@@ -779,6 +806,43 @@ public class NCMS_Routing extends Display
      * Switch the root of the tree by requesting a new spanning tree
      * at the desired root
      */
+
+    public static class MyFocusControl extends FocusControl {
+
+        public MyFocusControl(int clickCount, String group) {
+            super(clickCount, group);
+        }
+
+        public void itemClicked(VisualItem item, MouseEvent e) {
+            if (!filterCheck(item)) return;
+            if (UILib.isButtonPressed(e, button) &&
+                    e.getClickCount() == ccount && item instanceof NodeItem) {
+                if (item != curFocus) {
+                    Visualization vis = item.getVisualization();
+                    TupleSet ts = vis.getFocusGroup(group);
+
+                    boolean ctrl = e.isControlDown();
+                    if (!ctrl) {
+                        curFocus = item;
+                        ts.setTuple(item);
+                    } else if (ts.containsTuple(item)) {
+                        ts.removeTuple(item);
+                    } else {
+                        ts.addTuple(item);
+                    }
+                    runActivity(vis);
+
+                } else if (e.isControlDown()) {
+                    Visualization vis = item.getVisualization();
+                    TupleSet ts = vis.getFocusGroup(group);
+                    ts.removeTuple(item);
+                    curFocus = null;
+                    runActivity(vis);
+                }
+            }
+    }
+    }
+
     public static class TreeRootAction extends GroupAction {
         public TreeRootAction(String graphGroup) {
             super(graphGroup);
@@ -852,8 +916,9 @@ public class NCMS_Routing extends Display
         public EdgeColorAction(String group,int [] palette) {
         	super(group,"weight",Constants.EDGE_ARROW_FORWARD, VisualItem.STROKECOLOR, palette);
         	add("_hover", ColorLib.color(Color.ORANGE));
-            add("weight == 2", ColorLib.color(Color.MAGENTA));
-            add("weight == 3", ColorLib.color(Color.GRAY));
+            add("weight == 21", ColorLib.color(Color.MAGENTA));
+            add("weight == 22", ColorLib.color(Color.MAGENTA));
+            add("weight == 2", ColorLib.color(Color.GRAY));
 //            add("ingroup('_wrong_')", ColorLib.color(Color.MAGENTA));
 //            add("site='wrong'", ColorLib.color(Color.RED));
        }
@@ -862,8 +927,9 @@ public class NCMS_Routing extends Display
         public ArrowColorAction(String group,int [] palette) {
         	super(group,"weight",Constants.EDGE_ARROW_FORWARD, VisualItem.FILLCOLOR, palette);
             add("_hover", ColorLib.color(Color.ORANGE));
-            add("weight == 2", ColorLib.color(Color.MAGENTA));
-            add("weight == 3", ColorLib.color(Color.GRAY));
+            add("weight == 21", ColorLib.color(Color.MAGENTA));
+            add("weight == 22", ColorLib.color(Color.MAGENTA));
+            add("weight == 2", ColorLib.color(Color.GRAY));
 //            add("status='wrong'", ColorLib.color(Color.MAGENTA));
        }
     } // end of inner EdgeColorAction
@@ -912,7 +978,28 @@ public class NCMS_Routing extends Display
          // add(new InGroupPredicate(neighborGroups[2]), Constants.SHAPE_TRIANGLE_DOWN);
         }
     } // end of inner class TextColorAction
-    
+
+    public static class LogDetailListener implements GateProListener {
+
+        JTextPane textPane;
+
+        public LogDetailListener(JTextPane textPane) {
+            this.textPane = textPane;
+        }
+
+
+        @Override
+        public void receiveData(String data) {
+            try {
+//                System.out.print(""+data);
+                textPane.getDocument().insertString(textPane.getDocument().getLength(), "" + data, null);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        }
+
+    }
     
  //************************************************************************************************************************************   
     // Class NeighborHighlightControl
@@ -1360,6 +1447,7 @@ public class NCMS_Routing extends Display
 
         public void itemEntered(VisualItem item, MouseEvent e) {
 
+
             if (item instanceof NodeItem) {
                 Visualization vis = item.getVisualization();
                 vis.getGroup(this.hoverGroupName).setTuple(item);
@@ -1425,6 +1513,7 @@ public class NCMS_Routing extends Display
 
 		private JPopupMenu nodePopupMenu;
     	private JPopupMenu popupMenu;
+        private JPopupMenu edgePopupMenu;
 
 		private Point2D mousePosition = new Point2D.Double();
 		private VisualItem nodeVisualDummy;
@@ -1435,7 +1524,7 @@ public class NCMS_Routing extends Display
         private Point currentPoint;
     	public PopupMenuController(Visualization vis) {
     		this.vis = vis;
-//    		this.g = (Graph)m_vis.getGroup(m_group);
+    		this.g = (Graph)m_vis.getSourceData(tree);
     		this.d = vis.getDisplay(0);
 
 
@@ -1473,12 +1562,19 @@ public class NCMS_Routing extends Display
 
     		//create popupMenu for 'background'
     		popupMenu = new JPopupMenu();
-    		addNode = new JMenuItem("add Node", 'n');
+    		addNode = new JMenuItem("Thêm node", 'n');
     		addNode.setActionCommand("addNode");
     		popupMenu.addSeparator();
     		popupMenu.add(addNode);
     		addNode.setMnemonic(KeyEvent.VK_N);
     		addNode.addActionListener(this);
+
+            edgePopupMenu = new JPopupMenu();
+    		JMenuItem fixEdge = new JMenuItem("Sửa", 'f');
+    		fixEdge.setActionCommand("fixEdge");
+    		edgePopupMenu.add(fixEdge);
+    		fixEdge.setMnemonic(KeyEvent.VK_F);
+    		fixEdge.addActionListener(this);
 
 		}
 
@@ -1494,7 +1590,9 @@ public class NCMS_Routing extends Display
 
     			if (item instanceof NodeItem) {
     	    		nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-    			}
+    			}else if(item instanceof EdgeItem){
+                    edgePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
 
     		} else if (SwingUtilities.isLeftMouseButton(e)) {
     			if (item instanceof NodeItem) {	//a node was clicked
@@ -1552,12 +1650,12 @@ public class NCMS_Routing extends Display
     	public void actionPerformed(ActionEvent e) {
     		if (e.getActionCommand().startsWith("node")) {
     			if (e.getActionCommand().endsWith("delete")) {
-//                    if(newGui==null){
-//                        newGui = new GateProGUI("192.168.208.69",2257,"JulianPC","ngantrung");
-//                    }
-//
-//                    newGui.setConnectInfo("192.168.4.95:23");
-//                    newGui.showMe(null);
+                    if(newGui==null){
+                        newGui = new GateProGUI("192.168.208.69",2257,"JulianPC","ngantrung");
+                    }
+
+                    newGui.setConnectInfo("192.168.4.95:23");
+                    newGui.showMe(null);
     			} else if (e.getActionCommand().endsWith("editText")) {
 
     			} else if (e.getActionCommand().endsWith("addEdge")) {
@@ -1568,16 +1666,82 @@ public class NCMS_Routing extends Display
     			}
     		} else {
     			if (e.getActionCommand().equals("addNode")) {
-    				int node = (int) (Math.random()*(g.getNodeCount()-1));
-					Node source = g.getNode(node);	//random source
 
-    			} else {
 
+    			} else if (e.getActionCommand().equals("fixEdge")) {
+                     if(clickedItem instanceof EdgeItem){
+                         EdgeItem edge = ((EdgeItem)clickedItem);
+                         if(edge.getString("status").equalsIgnoreCase("wrong")){
+
+                             // Create Gatepro session
+//                              logScroll.setVisible(true);
+                              createGateProSession();
+
+                              NodeItem sourceItem = edge.getSourceItem();
+                              NodeItem targetItem = edge.getTargetItem();
+//                              g.getEdgeTable().removeRow(edge.getRow());
+                              Double weight =  Double.parseDouble(edge.getString("weight"));
+                             ((Table)vis.getSourceData(treeEdges)).removeRow(edge.getRow());
+
+                             String query =null;
+                             boolean mainPath;
+                             if(weight==21){
+                                mainPath = true;
+                                query = "name = '"+sourceItem.getString("mainPath")+"'";
+                             }else{
+                                mainPath = false;
+                                 query = "name = '"+sourceItem.getString("slavePath")+"'";
+                             }
+                             Predicate myPredicate1 = (Predicate) ExpressionParser.parse(query);
+                             Iterator ite = vis.getVisualGroup(treeNodes).tuples(myPredicate1);
+                             while(ite.hasNext()){
+                                 targetItem = (NodeItem)ite.next();
+                                 break;
+                             }
+                             Edge ed= g.getEdge(g.addEdge(sourceItem.getRow(), targetItem.getRow()));
+                             if(mainPath){
+                                 ed.setString("weight","1");
+                             }else{
+                                 ed.setString("weight","2");
+                             }
+
+                             ed.setString("status","right");
+                             if(!targetItem.isVisible()){
+                                 TupleSet ts = m_vis.getFocusGroup(hover);
+                                 ts.setTuple(sourceItem);
+                                 myPredicate.setSearchOneNodeInfo(sourceItem.getString("name"),sourceItem.getString("mainPath"),sourceItem.getString("slavePath"));
+                             }else{
+                                 myPredicate.setAllInfo(true);
+                             }
+
+                             vis.run("filter");
+                             logDetailDialog.setVisible(true);
+                         }
+                     }
     			}
     		}
     	}
 
 
+        public void createGateProSession(){
+            try{
+               gatepro = new GatePro("192.168.208.69",2257,"JulianPC","ngantrung");
+               GateProSession telnetGateSession = gatepro.createSession("192.168.4.95", "23");
+               telnetGateSession.addListener(logDetailListener);
+               telnetGateSession.setCommandTerminator("\r");
+               telnetGateSession.setPromt("login name:");
+               telnetGateSession.connect();
+               telnetGateSession.sendWait("viettel","password:");
+               telnetGateSession.sendWait("viettel1","Domain:");
+               telnetGateSession.sendWait("",">");
+               telnetGateSession.setPromt(">");
+               telnetGateSession.sendWait("dir");
+               telnetGateSession.exit();
+            }catch (Exception ex){
+               ex.printStackTrace();
+            }
+
+        }
 
 
     	@Override
@@ -1665,5 +1829,29 @@ public class NCMS_Routing extends Display
 
     public void setMyPredicate(HiddenGroupPredicate myPredicate) {
         this.myPredicate = myPredicate;
+    }
+
+    public LogDetailListener getLogDetailListener() {
+        return logDetailListener;
+    }
+
+    public void setLogDetailListener(LogDetailListener logDetailListener) {
+        this.logDetailListener = logDetailListener;
+    }
+
+    public JScrollPane getLogScrollPane() {
+        return logScrollPane;
+    }
+
+    public void setLogScrollPane(JScrollPane logScrollPane) {
+        this.logScrollPane = logScrollPane;
+    }
+
+    public JDialog getLogDetailDialog() {
+        return logDetailDialog;
+    }
+
+    public void setLogDetailDialog(JDialog logDetailDialog) {
+        this.logDetailDialog = logDetailDialog;
     }
 } // end of class  prefuse.demos.RadialGraphViewExtendedFeatures

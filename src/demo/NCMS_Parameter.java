@@ -41,6 +41,8 @@ import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.sort.TreeDepthItemSorter;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
@@ -61,7 +63,8 @@ import java.util.Vector;
  * @author <a href="http://jheer.org">jeffrey heer</a>
  * @version 1.0
  */
-public class NCMS_Parameter extends Display {
+public class NCMS_Parameter extends Display
+{
 
     public static final String TREE_CHI = "datasets/chi-ontology.xml";
 
@@ -80,6 +83,7 @@ public class NCMS_Parameter extends Display {
     private HashMap<String,Vector<Vector>> sampleData = new HashMap<String, Vector<Vector>>();
     private JPanel tablePanel;
     private CommonTableModel model;
+    private VisualItem clickedItem;
 
     public NCMS_Parameter(Tree t, String label) {
         super(new Visualization());
@@ -261,6 +265,7 @@ public class NCMS_Parameter extends Display {
             while ((strLine = br.readLine()) != null) {
 
                 strLine = strLine.trim();
+                if(strLine.isEmpty()) continue;
                 String[] parts = strLine.split(":");
                 Vector parameters = new Vector();
                 for(int i =1;i<parts.length;i++){
@@ -268,9 +273,30 @@ public class NCMS_Parameter extends Display {
                     parameters.add(parts[i]);
 
                 }
-                 Vector item = new Vector();
-                    item.add(parameters);
-                    sampleData.put(parts[0],item);
+
+                 String[] multiKey = parts[0].split("-");
+                 if(multiKey.length==1){
+                  if(sampleData.get(parts[0])!=null){
+                        sampleData.get(parts[0]).add(parameters);
+                  }else{
+                      Vector item = new Vector();
+                 item.add(parameters);
+                       sampleData.put(parts[0],item);
+                  }
+
+                 }else{
+                      for(int i=1;i<multiKey.length;i++){
+                          String keyStr = multiKey[0]+multiKey[i];
+                          if(sampleData.get(keyStr)!=null){
+                               sampleData.get(keyStr).add(parameters);
+                          }else{
+                              Vector item = new Vector();
+                 item.add(parameters);
+                               sampleData.put(keyStr,item);
+                          }
+                      }
+                 }
+
             }
 
             in.close();
@@ -409,6 +435,12 @@ public class NCMS_Parameter extends Display {
 
          tview.setModel(new CommonTableModel(column));
         JTable table = new JTable(tview.getModel());
+        ColoredTableCellRenderer coloredTableCellRenderer =  tview.new ColoredTableCellRenderer();
+//        for(int i =0;i<column.size();i++){
+          TableColumn col = table.getColumnModel().getColumn(5);
+          col.setCellRenderer(coloredTableCellRenderer);
+//        }
+
         final JScrollPane scrollPane = new JScrollPane(table);
         tview.getTablePanel().add(scrollPane, BorderLayout.CENTER);
 
@@ -424,9 +456,25 @@ public class NCMS_Parameter extends Display {
         panel.add(box, BorderLayout.SOUTH);
 
         tview.addControlListener(new ControlAdapter() {
+            public void itemClicked(VisualItem item, MouseEvent e) {
+//                if (event.getClickCount() == 2) {
+                    if (tview.getSampleData().get(item.getString("name")) == null) {
+                        tview.getModel().removeDataAll();
+                        tview.getTablePanel().setVisible(false);
+                        return;
+                    }
+                    tview.getModel().removeDataAll();
+                    tview.getTablePanel().setVisible(false);
+                    for (Vector oneRow : tview.getSampleData().get(item.getString("name"))) {
+                        tview.getModel().addData(oneRow);
+                    }
+                    tview.getTablePanel().setVisible(true);
+//                }
+
+            }
             public void itemEntered(VisualItem item, MouseEvent e) {
                 if (item.canGetString(label)){
-
+                    tview.setClickedItem(item);
                     title.setText(item.getString(label));
                 }
 
@@ -434,7 +482,6 @@ public class NCMS_Parameter extends Display {
 
             public void itemExited(VisualItem item, MouseEvent e) {
                 title.setText(null);
-
             }
         });
 
@@ -545,6 +592,37 @@ public class NCMS_Parameter extends Display {
 
     } // end of inner class TreeMapColorAction
 
+public class ColoredTableCellRenderer extends DefaultTableCellRenderer
+{
+    private static final long serialVersionUID = 1L;
+    public JLabel dummyLabel = null;
+
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        // component will actually be this.
+        Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        Object temp = model.getRowAt(table.convertRowIndexToModel(row));
+        String validValue  = (String)((Vector)temp).get(2);
+        String realValue =  (String)((Vector)temp).get(5);
+        if (!validValue.equals(realValue)) {
+            component.setBackground(Color.RED);
+            component.setForeground(Color.WHITE);
+            if (isSelected == true) {
+                component.setForeground(new Color(252, 225, 124));
+            }
+        }
+        else {
+            component.setBackground(Color.WHITE);
+            component.setForeground(Color.BLACK);
+            if (isSelected == true) {
+                component.setBackground(new Color(252, 225, 124));
+            }
+        }
+        return component;
+    }
+}
+
+
    public class PopupMenuController extends ControlAdapter implements
            ActionListener {
 
@@ -572,19 +650,19 @@ public class NCMS_Parameter extends Display {
 
     		//create popupMenu for nodes
     		nodePopupMenu = new JPopupMenu();
-            JMenuItem viewDetail = new JMenuItem("Chi tiết", 'c');
+//            JMenuItem viewDetail = new JMenuItem("Chi tiết", 'c');
     		JMenuItem delete = new JMenuItem("Kết nối", 'd');
     		JMenuItem editText = new JMenuItem("Backup cấu hình", 'a');
     		JMenuItem addEdge = new JMenuItem("Restore cấu hình", 'e');
     		JMenuItem addNode = new JMenuItem("Import cấu hình", 'n');
 
-            viewDetail.setActionCommand("node_viewDetail");
+//            viewDetail.setActionCommand("node_viewDetail");
     		delete.setActionCommand("node_delete");
     		editText.setActionCommand("node_editText");
     		addEdge.setActionCommand("node_addEdge");
     		addNode.setActionCommand("node_addNode");
 
-            nodePopupMenu.add(viewDetail);
+//            nodePopupMenu.add(viewDetail);
     		nodePopupMenu.addSeparator();
     		nodePopupMenu.add(delete);
     		nodePopupMenu.addSeparator();
@@ -598,7 +676,7 @@ public class NCMS_Parameter extends Display {
     		addEdge.setMnemonic(KeyEvent.VK_E);
     		addNode.setMnemonic(KeyEvent.VK_N);
 
-            viewDetail.addActionListener(this);
+//            viewDetail.addActionListener(this);
     		delete.addActionListener(this);
     		editText.addActionListener(this);
     		addEdge.addActionListener(this);
@@ -710,16 +788,16 @@ public class NCMS_Parameter extends Display {
     			} else if (e.getActionCommand().endsWith("addNode")) {
                      action =4;
     			}  else if (e.getActionCommand().endsWith("viewDetail")) {
-                    if (tablePanel.isVisible()) {
-                        model.removeDataAll();
-                        tablePanel.setVisible(false);
-                    } else {
-                        if (sampleData.get(clickedItem.getString("name")) == null) return;
-                        for (Vector oneRow : sampleData.get(clickedItem.getString("name"))) {
-                            model.addData(oneRow);
-                        }
-                        tablePanel.setVisible(true);
-                    }
+//                    if (tablePanel.isVisible()) {
+//                        model.removeDataAll();
+//                        tablePanel.setVisible(false);
+//                    } else {
+//                        if (sampleData.get(clickedItem.getString("name")) == null) return;
+//                        for (Vector oneRow : sampleData.get(clickedItem.getString("name"))) {
+//                            model.addData(oneRow);
+//                        }
+//                        tablePanel.setVisible(true);
+//                    }
     			}
     		} else {
     			if (e.getActionCommand().equals("addNode")) {
@@ -772,5 +850,21 @@ public class NCMS_Parameter extends Display {
 
     public void setModel(CommonTableModel model) {
         this.model = model;
+    }
+
+    public HashMap<String, Vector<Vector>> getSampleData() {
+        return sampleData;
+    }
+
+    public void setSampleData(HashMap<String, Vector<Vector>> sampleData) {
+        this.sampleData = sampleData;
+    }
+
+    public VisualItem getClickedItem() {
+        return clickedItem;
+    }
+
+    public void setClickedItem(VisualItem clickedItem) {
+        this.clickedItem = clickedItem;
     }
 } // end of class TreeMap

@@ -17,6 +17,7 @@ import prefuse.render.Renderer;
 import prefuse.util.ColorLib;
 import prefuse.util.ui.UILib;
 import prefuse.visual.AggregateItem;
+import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
@@ -359,7 +360,7 @@ public class GraphEditor extends Display {
     				return;
     			}
     			
-    			if (item instanceof NodeItem) {
+    			if (item instanceof EdgeItem) {
     	    		nodePopupMenu.show(e.getComponent(), e.getX(), e.getY());
     			}
     		} else if (SwingUtilities.isLeftMouseButton(e)) {
@@ -424,7 +425,7 @@ public class GraphEditor extends Display {
     	public void actionPerformed(ActionEvent e) {
     		if (e.getActionCommand().startsWith("node")) {
     			if (e.getActionCommand().endsWith("delete")) {
-    				g.removeNode((Node)clickedItem.getSourceTuple());
+    				g.removeEdge((Edge)clickedItem);
     			} else if (e.getActionCommand().endsWith("editText")) {
     				startEditing(clickedItem);
     			} else if (e.getActionCommand().endsWith("addEdge")) {

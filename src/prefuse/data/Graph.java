@@ -545,7 +545,7 @@ public class Graph extends CompositeTupleSet {
         // get keys for the nodes
         long key1 = getKey(s);
         long key2 = getKey(t);
-        
+
         // add edge row, set source/target fields
         Table edges = getEdgeTable();
         int r = edges.addRow();

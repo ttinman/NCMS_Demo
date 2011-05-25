@@ -16,8 +16,18 @@
     <attribute name="name" value="Nokia"/>
      <attribute name="image" value="datasets/images/server_ok.png"/>
      <attribute name="status" value="matched"/>
-      <leaf>
-     <attribute name="name" value="BCGM08"/>
+     <leaf>
+     <attribute name="name" value="BCHT20"/>
+     <attribute name="image" value="datasets/images/server_ok.png"/>
+     <attribute name="status" value="matched"/>
+    </leaf>
+    <leaf>
+     <attribute name="name" value="BCHT21"/>
+     <attribute name="image" value="datasets/images/server_ok.png"/>
+     <attribute name="status" value="matched"/>
+    </leaf>
+     <leaf>
+     <attribute name="name" value="BCHT22"/>
      <attribute name="image" value="datasets/images/server_ok.png"/>
      <attribute name="status" value="matched"/>
     </leaf>
@@ -27,64 +37,21 @@
     <attribute name="image" value="datasets/images/server_ok.png"/>
     <attribute name="status" value="matched"/>
     <leaf>
-     <attribute name="name" value="BCHT71"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
-    </leaf>
-   </branch>
-   <branch>
-    <attribute name="name" value="ZTE"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
      <leaf>
-     <attribute name="name" value="MWPD08"/>
+     <attribute name="name" value="BCHT33"/>
      <attribute name="image" value="datasets/images/server_ok.png"/>
      <attribute name="status" value="matched"/>
     </leaf>
-   </branch>
-   <branch>
-    <attribute name="name" value="Huawei"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
-     <leaf>
-     <attribute name="name" value="MWPD09"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
-    </leaf>
-   </branch>
-  </branch>
-  <branch>
-   <attribute name="name" value="MGW"/>
-   <attribute name="image" value="datasets/images/environment_ok.png"/>
-   <attribute name="status" value="matched"/>
-    <branch>
-    <attribute name="name" value="Nokia"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
-      <leaf>
-     <attribute name="name" value="BCGM08"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
-    </leaf>
-   </branch>
-   <branch>
-    <attribute name="name" value="Ericsson"/>
-    <attribute name="image" value="datasets/images/server_ok.png"/>
-    <attribute name="status" value="matched"/>
     <leaf>
-     <attribute name="name" value="BCHT71"/>
+     <attribute name="name" value="BCHT34"/>
      <attribute name="image" value="datasets/images/server_ok.png"/>
      <attribute name="status" value="matched"/>
     </leaf>
-   </branch>
-   <branch>
-    <attribute name="name" value="ZTE"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
      <leaf>
-     <attribute name="name" value="MWPD08"/>
+     <attribute name="name" value="BCHT35"/>
      <attribute name="image" value="datasets/images/server_ok.png"/>
      <attribute name="status" value="matched"/>
+    </leaf>
     </leaf>
    </branch>
    <branch>
@@ -92,7 +59,17 @@
      <attribute name="image" value="datasets/images/server_ok.png"/>
      <attribute name="status" value="matched"/>
      <leaf>
-     <attribute name="name" value="MWPD09"/>
+     <attribute name="name" value="BCHT65"/>
+     <attribute name="image" value="datasets/images/server_ok.png"/>
+     <attribute name="status" value="matched"/>
+    </leaf>
+    <leaf>
+     <attribute name="name" value="BCHT66"/>
+     <attribute name="image" value="datasets/images/server_ok.png"/>
+     <attribute name="status" value="matched"/>
+    </leaf>
+     <leaf>
+     <attribute name="name" value="BCHT67"/>
      <attribute name="image" value="datasets/images/server_ok.png"/>
      <attribute name="status" value="matched"/>
     </leaf>
@@ -102,69 +79,71 @@
    <attribute name="name" value="MSC"/>
    <attribute name="image" value="datasets/images/environment_error.png"/>
    <attribute name="status" value="notmatch"/>
-    <branch>
-    <attribute name="name" value="Nokia"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-    <attribute name="status" value="matched"/>
-      <leaf>
-     <attribute name="name" value="BCGM08"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
-    </leaf>
-   </branch>
+
    <branch>
     <attribute name="name" value="Ericsson"/>
-    <attribute name="image" value="datasets/images/server_ok.png"/>
-    <attribute name="status" value="matched"/>
+    <attribute name="image" value="datasets/images/server_error.png"/>
+    <attribute name="status" value="notmatch"/>
     <leaf>
-     <attribute name="name" value="BCHT71"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
-    </leaf>
-   </branch>
-   <branch>
-    <attribute name="name" value="ZTE"/>
-     <attribute name="image" value="datasets/images/server_error.png"/>
-     <attribute name="status" value="notmatch"/>
-     <leaf>
-     <attribute name="name" value="MWPD08"/>
+     <attribute name="name" value="MCGM01"/>
      <attribute name="image" value="datasets/images/server_error.png"/>
      <attribute name="status" value="notmatch"/>
     </leaf>
-   </branch>
-   <branch>
-    <attribute name="name" value="Huawei"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
+    <leaf>
+     <attribute name="name" value="MCGM02"/>
+     <attribute name="image" value="datasets/images/server_error.png"/>
+     <attribute name="status" value="notmatch"/>
+    </leaf>
      <leaf>
-     <attribute name="name" value="MWPD09"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
+     <attribute name="name" value="MCGM03"/>
+     <attribute name="image" value="datasets/images/server_error.png"/>
+     <attribute name="status" value="notmatch"/>
     </leaf>
    </branch>
   </branch>
   <branch>
    <attribute name="name" value="RNC"/>
    <attribute name="image" value="datasets/images/environment_error.png"/>
-   <attribute name="status" value="matched"/>
+   <attribute name="status" value="notmatch"/>
    <branch>
     <attribute name="name" value="ZTE"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
+     <attribute name="image" value="datasets/images/server_error.png"/>
+     <attribute name="status" value="notmatch"/>
      <leaf>
-     <attribute name="name" value="MWPD08"/>
+     <attribute name="name" value="RCHT01"/>
      <attribute name="image" value="datasets/images/server_ok.png"/>
      <attribute name="status" value="matched"/>
     </leaf>
+    <leaf>
+     <attribute name="name" value="RCHT02"/>
+     <attribute name="image" value="datasets/images/server_ok.png"/>
+     <attribute name="status" value="matched"/>
+    </leaf>
+     <leaf>
+     <attribute name="name" value="RCHT03"/>
+     <attribute name="image" value="datasets/images/server_error.png"/>
+     <attribute name="status" value="notmatch"/>
+    </leaf>
+
    </branch>
    <branch>
     <attribute name="name" value="Huawei"/>
-     <attribute name="image" value="datasets/images/server_error.png"/>
-     <attribute name="status" value="notmatch"/>
+     <attribute name="image" value="datasets/images/server_ok.png"/>
+     <attribute name="status" value="matched"/>
      <leaf>
-     <attribute name="name" value="MWPD09"/>
-     <attribute name="image" value="datasets/images/server_error.png"/>
-     <attribute name="status" value="notmatch"/>
+     <attribute name="name" value="RCHT11"/>
+     <attribute name="image" value="datasets/images/server_ok.png"/>
+     <attribute name="status" value="matched"/>
+    </leaf>
+    <leaf>
+     <attribute name="name" value="RCHT12"/>
+     <attribute name="image" value="datasets/images/server_ok.png"/>
+     <attribute name="status" value="matched"/>
+    </leaf>
+     <leaf>
+     <attribute name="name" value="RCHT13"/>
+     <attribute name="image" value="datasets/images/server_ok.png"/>
+     <attribute name="status" value="matched"/>
     </leaf>
    </branch>
   </branch>
@@ -172,24 +151,19 @@
    <attribute name="name" value="STP"/>
    <attribute name="image" value="datasets/images/environment_error.png"/>
    <attribute name="status" value="matched"/>
-    <branch>
-    <attribute name="name" value="Nokia"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
-      <leaf>
-     <attribute name="name" value="BCGM08"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
-    </leaf>
-   </branch>
    <branch>
     <attribute name="name" value="Tekelec"/>
      <attribute name="image" value="datasets/images/server_error.png"/>
      <attribute name="status" value="notmatch"/>
      <leaf>
-     <attribute name="name" value="MWPD09"/>
-     <attribute name="image" value="datasets/images/server_error.png"/>
-     <attribute name="status" value="notmatch"/>
+     <attribute name="name" value="STHT01"/>
+     <attribute name="image" value="datasets/images/server_ok.png"/>
+     <attribute name="status" value="matched"/>
+    </leaf>
+     <leaf>
+     <attribute name="name" value="STHT02"/>
+     <attribute name="image" value="datasets/images/server_ok.png"/>
+     <attribute name="status" value="matched"/>
     </leaf>
    </branch>
   </branch>
@@ -198,23 +172,43 @@
    <attribute name="image" value="datasets/images/environment_error.png"/>
    <attribute name="status" value="matched"/>
    <branch>
-    <attribute name="name" value="Ericsson"/>
+    <attribute name="name" value="Huawei"/>
     <attribute name="image" value="datasets/images/server_error.png"/>
      <attribute name="status" value="notmatch"/>
     <leaf>
-     <attribute name="name" value="BCHT71"/>
+     <attribute name="name" value="MSHT04"/>
+     <attribute name="image" value="datasets/images/server_error.png"/>
+     <attribute name="status" value="notmatch"/>
+    </leaf>
+    <leaf>
+     <attribute name="name" value="MSHT05"/>
+     <attribute name="image" value="datasets/images/server_error.png"/>
+     <attribute name="status" value="notmatch"/>
+    </leaf>
+    <leaf>
+     <attribute name="name" value="MSHT06"/>
      <attribute name="image" value="datasets/images/server_error.png"/>
      <attribute name="status" value="notmatch"/>
     </leaf>
    </branch>
    <branch>
-    <attribute name="name" value="ZTE"/>
+    <attribute name="name" value="Nokia"/>
      <attribute name="image" value="datasets/images/server_ok.png"/>
      <attribute name="status" value="matched"/>
      <leaf>
-     <attribute name="name" value="MWPD08"/>
-     <attribute name="image" value="datasets/images/server_ok.png"/>
-     <attribute name="status" value="matched"/>
+     <attribute name="name" value="MSPL06"/>
+     <attribute name="image" value="datasets/images/server_error.png"/>
+     <attribute name="status" value="notmatch"/>
+    </leaf>
+    <leaf>
+     <attribute name="name" value="MSPL07"/>
+     <attribute name="image" value="datasets/images/server_error.png"/>
+     <attribute name="status" value="notmatch"/>
+    </leaf>
+    <leaf>
+     <attribute name="name" value="MSPL08"/>
+     <attribute name="image" value="datasets/images/server_error.png"/>
+     <attribute name="status" value="notmatch"/>
     </leaf>
    </branch>
 
